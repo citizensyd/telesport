@@ -1,11 +1,13 @@
-import { Component, OnInit, ViewEncapsulation, TemplateRef, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { OlympicService } from 'src/app/core/services/olympic.service';
 import { PieChart } from 'src/app/core/models/PieChart';
-import { Country } from 'src/app/core/models/Olympic';
 import { Color, ScaleType, LegendPosition } from '@swimlane/ngx-charts';
+import { Subject, takeUntil } from 'rxjs';
+import { OlympicEvent } from 'src/app/core/models/OlympicPieEvent';
 
 /**
  * Component for displaying pie charts using ngx-charts.
+ * This component visualizes Olympic medals data in a pie chart format.
  */
 @Component({
   selector: 'app-pie-chart',
@@ -14,8 +16,10 @@ import { Color, ScaleType, LegendPosition } from '@swimlane/ngx-charts';
   encapsulation: ViewEncapsulation.None
 })
 export class PieChartComponent implements OnInit {
-
-  // Color scheme configuration for the pie chart.
+  /**
+   * Defines the color scheme of the pie chart. The scheme is customizable and
+   * consists of an array of hexadecimal color values.
+   */
   colorScheme: Color = {
     name: 'customScheme',
     selectable: true,
@@ -23,43 +27,59 @@ export class PieChartComponent implements OnInit {
     domain: ['#956065', '#793d52', '#89a1db', '#9780a1', '#bfe0f1', '#b8cbe7']
   };
 
-  // Configuration options for the pie chart.
+  /**
+   * Configures the display options of the pie chart, including whether to
+   * show labels, the position of the legend, and whether to render the chart
+   * as a doughnut.
+   */
   gradient: boolean = false;
   legendPosition: LegendPosition = LegendPosition.Right;
   showLabels: boolean = true;
   isDoughnut: boolean = false;
   arcWidth: number = 0.25;
 
-  // Data for the pie chart.
-  data: Country[] = [];
+  /**
+   * Stores the data to be visualized in the pie chart, representing the
+   * distribution of Olympic medals among countries.
+   */
   countriesMedals: PieChart[] = [];
 
+  private unsubscribe$ = new Subject<void>();
+
   /**
-   * Constructor to inject the OlympicService and ChangeDetectorRef.
-   * @param olympicService - Service to fetch Olympic data.
+   * Initializes the PieChartComponent and injects dependencies for data retrieval.
+   * @param olympicService The service to fetch and process Olympic data.
    */
   constructor(private olympicService: OlympicService) { }
 
   /**
-   * OnInit lifecycle hook to load initial data for the pie chart.
+   * Subscribes to the Olympic data on component initialization and updates
+   * the pie chart data accordingly. Ensures that the component reacts to
+   * changes in the Olympic data over time.
    */
   ngOnInit(): void {
-    this.olympicService.getOlympics().subscribe((countries: Country[]) => {
-      this.data = countries;
-      this.countriesMedals = this.olympicService.processDataForPieChart(this.data);
+    this.olympicService.olympics$.pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe(() => {
+      this.countriesMedals = this.olympicService.processDataForPieChart();
     });
   }
 
- 
-  
-
-  
+  /**
+   * Handles click events on elements of the pie chart, triggering
+   * actions such as navigation or data updates based on the clicked element.
+   * @param event The event object representing the clicked chart element.
+   */
+  onElementClick(event: OlympicEvent): void {
+    this.olympicService.onSelect(event);
+  }
 
   /**
-   * Handles the selection event on the pie chart.
-   * @param event - The event object containing details of the selected segment.
+   * Cleans up resources and subscriptions when the component is destroyed
+   * to prevent memory leaks.
    */
-  onSelect(event: any): void {
-    console.log('Segment sélectionné:', event);
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }
