@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { OlympicService } from 'src/app/core/services/olympic.service';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-title',
@@ -7,10 +6,11 @@ import { OlympicService } from 'src/app/core/services/olympic.service';
   styleUrls: ['./title.component.scss']
 })
 export class TitleComponent implements OnInit {
-  chartData = {
-    title: 'Medals per Country',
-  }
-  constructor(private olympicService: OlympicService) { }
+
+  @Input() title: string = '';
+
+
+  constructor() { }
 
   ngOnInit(): void {
 

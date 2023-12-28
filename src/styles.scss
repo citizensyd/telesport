@@ -20,6 +20,10 @@ app-root {
 
 .bold-text {
   font-weight: 700;
+  color: black
 }
 
+input, textarea, button, h2, svg {
+  caret-color: transparent;
+}
 
