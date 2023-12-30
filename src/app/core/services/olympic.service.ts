@@ -113,8 +113,7 @@ export class OlympicService {
    * @returns The ID of the country if found, or undefined if not found.
    */
   countryIdByName(countryName: string): number | undefined {
-    const lowercaseCountryName = countryName.toLowerCase();
-    const country = this.olympicsSubject$.getValue().find(c => c.country.toLowerCase() === lowercaseCountryName);
+    const country = this.olympicsSubject$.getValue().find(c => c.country.toLowerCase() === countryName.toLowerCase());
     return country?.id;
   }
 
@@ -124,7 +123,7 @@ export class OlympicService {
    * @returns Array of PieChart data.
   */
   processDataForPieChart(): PieChart[] {
-    let data = this.olympicsSubject$.getValue();
+    const data = this.olympicsSubject$.getValue();
     return data.map(country => ({
       name: country.country,
       value: country.participations.reduce((acc, curr) => acc + curr.medalsCount, 0),
@@ -137,7 +136,7 @@ export class OlympicService {
    * @returns Object containing counts of unique Olympic years and countries.
    */
   processOlympicGamesAndCountry(): TotalOlympicGamesAndCountry {
-    let data = this.olympicsSubject$.getValue();
+    const data = this.olympicsSubject$.getValue();
     const uniqueYears = new Set<number>();
     const uniqueCountries = new Set<string>();
 
@@ -161,8 +160,8 @@ export class OlympicService {
    * @returns Object containing entries, medals, and athletes counts.
    */
   processEntriesMedalsAthletes(): EntriesMedalsAthletes {
-    let data = this.olympicsSubject$.getValue();
-    let countryId = this.countryIdSubject$.getValue();
+    const data = this.olympicsSubject$.getValue();
+    const countryId = this.countryIdSubject$.getValue();
     let entriesValue = 0, medalsValue = 0, athletesValue = 0;
 
     data.forEach(country => {
@@ -192,8 +191,8 @@ export class OlympicService {
    * It represents the number of medals won by the country in a specific year.
    */
   processCountryMedalsPerDate(): MedalData[] {
-    let data = this.olympicsSubject$.getValue();
-    let countryId = this.countryIdSubject$.getValue();
+    const data = this.olympicsSubject$.getValue();
+    const countryId = this.countryIdSubject$.getValue();
     const countryData = data.find(country => country.id === countryId);
     if (!countryData) {
       return [];
@@ -219,7 +218,7 @@ export class OlympicService {
  * @returns Observable emitting true if the country ID is valid, false otherwise.
  */
   isValidCountry(): Observable<boolean> {
-    let countryId = this.countryIdSubject$.getValue();
+    const countryId = this.countryIdSubject$.getValue();
     return this.olympicsSubject$.pipe(
       map((data: Country[]) => {
         return data.some(country => country.id === countryId);
