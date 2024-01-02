@@ -3,11 +3,30 @@
 
 /* Style for the statistic card */
 .statistic-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     text-align: center;
     border: 2px solid $primary-color;
     padding: 10px;
     border-radius: $border-radius;
-    line-height: 2em;
-    margin-left: 50px;
+    line-height: 2.5vw;
+    margin-left: 1vw;
+    margin-right: 1.5vw;
     color: #8c8c8c;
+    font-size: clamp(14px, 2vw, 20px);
+    height: 10vw;
+    max-height: 50px;
+}
+
+@media (max-width: 600px) {
+    .statistic-card {
+        line-height: 4vw;
+    }
+}
+
+@media (min-width: 800px) {
+    .statistic-card {
+        line-height: 30px;
+    }
 }

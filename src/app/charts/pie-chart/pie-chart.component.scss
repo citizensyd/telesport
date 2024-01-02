@@ -69,13 +69,15 @@ ngx-tooltip-content.ngx-charts-tooltip-content.type-tooltip {
 
 .chart-container {
     width: 100%;
-    max-width: 600px; /* Ajustez cette valeur en fonction de vos besoins */
-    margin: 0 auto; /* Pour centrer le conteneur si nécessaire */
-  }
-  
-  @media (max-width: 768px) {
+    max-width: 600px;
+    /* Ajustez cette valeur en fonction de vos besoins */
+    margin: 0 auto;
+    /* Pour centrer le conteneur si nécessaire */
+}
+
+@media (max-width: 768px) {
     .chart-container {
-      max-width: 400px; /* Ajustez cette valeur pour les écrans plus petits */
+        max-width: 400px;
+        /* Ajustez cette valeur pour les écrans plus petits */
     }
   }
-  
